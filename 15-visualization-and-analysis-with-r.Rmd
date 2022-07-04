@@ -28,7 +28,7 @@
 
 This notebook will focus on data visualization with some analysis to understand the condition inside the business and get a sense of what happend in the past. All of this work are using **R language** instead of Python
 
-There are 18 unique visualizations throughout this notebook
+There are 18 unique visualizations throughout this notebook along with analysis and the explanation regarding what we expect or are trying to get from the visualization
 
 ## Importing Library and Loading the Data
 
@@ -66,6 +66,11 @@ cat('\nTotal of columns:', ncol(df))
 
 ### Visualization #1
 
+The questions we hope to be answered / What we expect to get from the visualization:
+
+-   How long the items get shipped since the day we order?
+-   Is there any relations between ship mode and shipping speed?
+
 ```{r}
 df <- df %>%
     mutate(`Order Date` = mdy(`Order Date`),
@@ -97,7 +102,16 @@ df %>%
                                     hjust=0.5))
 ```
 
+What insight or information we got from the visualization:
+
+1.  Same day is the fastest ship mode that will ship your item on the same day as the day you order
+2.  5 days is the average of standard class to start shipping your item
+
 ### Visualization #2
+
+The questions we hope to be answered / What we expect to get from the visualization:
+
+-   Which of the ship mode did each segment (Home Office, Corporate, Consumer) prefer?
 
 ```{r}
 df %>% 
@@ -109,7 +123,17 @@ df %>%
     theme(plot.title = element_text(size = 20, face = "bold", hjust=0.5))
 ```
 
+What insight or information we got from the visualization:
+
+1.  All segments prefer standard class option for ship mode
+2.  All segment also share the same thing as the same day is the least ship mode option
+
 ### Visualization #3
+
+The questions we hope to be answered / What we expect to get from the visualization:
+
+-   Who are the store's top 5 customers based on how many times they made purchase on the store?
+-   How many times they made the purchases?
 
 ```{r}
 customer <- df %>%
@@ -132,6 +156,10 @@ customer %>%
     coord_flip()
 ```
 
+What insight or information we got from the visualization:
+
+1.  Jonathan Doherty has made 150 purchases at the store, make him at the top of that list
+
 We also want to know the segment of the top 5 customers, so up next we will perform some data processing to answer that
 
 ```{r}
@@ -145,7 +173,17 @@ segment %<>%
 left_join(x=customer, y=segment, by='Customer Name')
 ```
 
+What insight or information we got from the analysis:
+
+1.  Jonathan is from corporate segment
+2.  There is all the segments in the top 5 list which means there is no domination from one of the segments
+
 ### Visualization #4
+
+The questions we hope to be answered / What we expect to get from the visualization:
+
+-   Who are the store's top 5 customers based on the total amount of payment they made at the store?
+-   How much they spent for the items at the store?
 
 ```{r}
 customerSales <- df %>%
@@ -166,6 +204,10 @@ customerSales %>%
     scale_y_continuous(limits=c(0, 26000))
 ```
 
+What insight or information we got from the visualization:
+
+1.  For the top 5 list of the total payment, Sean Miller is on top who spent above 25000 USD at the store. That is almost double total payment of the 5th people
+
 ```{r}
 customerSalesName <- customerSales$'Customer Name'
 customerSalesSegment <- df[df$'Customer Name' %in% customerSalesName,]
@@ -177,7 +219,16 @@ customerSalesSegment %<>%
 left_join(x=customerSales, y=customerSalesSegment, by='Customer Name')
 ```
 
+What insight or information we got from the analysis:
+
+1.  Sean Miller bought less items than Adrian Barton, but still manage to the top. It means the items are slightly more expensive
+2.  Sean Miller is from Home Office segment
+
 ### Visualization #5
+
+The questions we hope to be answered / What we expect to get from the visualization:
+
+-   Where are the customers come from? specifically from what state?
 
 ```{r}
 state <- df %>%
@@ -200,7 +251,17 @@ stateMap %>%
     theme(plot.title=element_text(size=20, face='bold', hjust=0.5))
 ```
 
+What insight or information we got from the visualization:
+
+1.  There are many customers come from California, denoted by yellow color on the map
+2.  The rest doesn't stand out compare to California
+
 ### Visualization #6
+
+The questions we hope to be answered / What we expect to get from the visualization:
+
+-   Which of the states give the most customers?
+-   How about the comparison?
 
 ```{r}
 polarPlotData <- slice(state, 1:5)[c('State', 'count')] %>%
@@ -220,7 +281,16 @@ polarPlotData %>%
           axis.text.x=element_text(face='bold'))
 ```
 
+What insight or information we got from the visualization:
+
+1.  California is so dominant with 2001 customer. It's 4 times bigger than Washington
+
 ### Visualization #7
+
+The questions we hope to be answered / What we expect to get from the visualization:
+
+-   What are the regions (Central, East, West, South) of the store's customers?
+-   How about the comparison?
 
 ```{r}
 reg <- df %>%
@@ -245,7 +315,16 @@ reg %>%
     theme(plot.title=element_text(size=20, hjust=0.5, face='bold'))
 ```
 
+What insight or information we got from the visualization:
+
+1.  As you can see that most of the customers come from West region of the US
+
 ### Visualization #8
+
+The questions we hope to be answered / What we expect to get from the visualization:
+
+-   How many sub categories that each category has?
+-   From those sub categories, which items are the most popular?
 
 ```{r}
 category <- df %>%
@@ -262,7 +341,17 @@ category %>%
     geom_treemap_text(color='white', place='center', size=15)
 ```
 
+What insight or information we got from the visualization:
+
+1.  The size of the borders depends on the sales of the items. So, the bigger the border, the more the sales. In this case, binder and paper are the most favorite item in Office Supplies category, furnishings is the most bought item in Furniture category, and so do the phones in Technology category
+
 ### Visualization #9
+
+The questions we hope to be answered / What we expect to get from the visualization and analysis:
+
+-   What are the store's top 5 popular products?
+-   They belong from which category? 
+-   How many types of the product that the store's top 5 products have?
 
 ```{r}
 product <- df %>%
@@ -286,6 +375,10 @@ product %>%
     theme(plot.title=element_text(size=20, hjust=0.5, face='bold'))
 ```
 
+What insight or information we got from the visualization:
+
+1.  Staple envelope is the most purchased item at the store, following with Easy-staple paper and Staples with 46 purchases
+
 ```{r}
 productName <- product$'Product Name'
 productNameID <- df[df$'Product Name' %in% productName,][c('Product Name', 'Product ID', 'Category')]
@@ -303,13 +396,19 @@ productCat <- productNameID %>%
 left_join(x=totalType, y=productCat, by='Product Name')
 ```
 
-As you can see from above table, all of top 5 product come from office supplies. The tabel also tells us about how many types do the products have
+What insight or information we got from the analysis:
+
+1.    As you can see from above table, all of top 5 product come from office supplies. The tabel also tells us about how many types do the products have
 
 > For instance:
 >
 > Staples have 10 different product IDs which correspond to 10 different types of staple products
 
 ### Visualization #10
+The questions we hope to be answered / What we expect to get from the visualization and analysis:
+
+-   How many sales that the store made from each segment and sub category
+-   What are the most popular sub category for each segment that yields the most sales at the store
 
 ```{r}
 df %>%
@@ -318,6 +417,9 @@ df %>%
     arrange(`Segment`, -`Total Payment`) %>%
     slice(1)
 ```
+What insight or information we got from the analysis:
+
+1.    Chairs is the most popular item for consumer and corporate segment. Meanwhile, phones is popular among home office segment
 
 ```{r}
 df %>%
@@ -331,8 +433,17 @@ df %>%
     theme_classic()+
     theme(plot.title=element_text(size=20, face='bold', hjust=0.5))
 ```
+What insight or information we got from the visualization:
+
+1.    Chairs and phones are the prominent sub category for each segment
+2.    Consumer segment spent more money than the other segment
 
 ### Visualization #11
+The questions we hope to be answered / What we expect to get from the visualization:
+
+-   Is the profit directly proportional to the sales?
+-   Is there any pattern on the plot?
+-   Does the discount influence the profit of the store?
 
 ```{r}
 df %>%
@@ -343,8 +454,16 @@ df %>%
     theme_light()+
     theme(plot.title=element_text(size=20, face='bold', hjust=0.5))
 ```
+What insight or information we got from the visualization:
+
+1.    Profit tends to go up when sales is higher
+2.    Discount really affect the profit. The bigger discount gives minus profit to the store
 
 ### Visualization #12
+The questions we hope to be answered / What we expect to get from the visualization:
+
+-   What is the difference of sales vs profit for each category?
+-   How about the correlation of sales and profit?
 
 ```{r}
 df %>%
@@ -356,8 +475,15 @@ df %>%
     theme_light()+
     theme(plot.title=element_text(size=20, face='bold', hjust=0.5))
 ```
+What insight or information we got from the visualization:
+
+1.    From the smooth line, Office Supplies and Technology tend to rise with the increase of the sales. On the other hand, Furniture is predicted to go down with the increase of the sales. It's probably because of many discounts they offer for this specific category
 
 ### Visualization #13
+The questions we hope to be answered / What we expect to get from the visualization and analysis:
+
+-   What is the biggest discount that each category offers?
+-   For what sub category is that discount?
 
 ```{r}
 df %>%
@@ -372,6 +498,9 @@ df %>%
     theme_void()+
     theme(plot.title=element_text(size=20, face='bold', hjust=0.5))
 ```
+What insight or information we got from the visualization:
+
+1.    The biggest discount is 70% for Furniture and Technology, besides the Office Supplies is 80%
 
 Here is the sub-category that holds the biggest discount
 
@@ -382,8 +511,15 @@ df %>%
     arrange(-`Max Discount`) %>%
     slice(1)
 ```
+What insight or information we got from the analysis:
+
+1.    Bookcases holds the biggest discount for Furniture category, appliances for all of the category with 80% discount, and machines for Technology category
 
 ### Visualization #14
+The questions we hope to be answered / What we expect to get from the visualization:
+
+-   How is the relationship between discount and profit?
+-   Is it less profitable as the discount increase?
 
 ```{r}
 df %>%
@@ -393,8 +529,15 @@ df %>%
     theme_light()+
     theme(plot.title=element_text(size=20, face='bold', hjust=0.5))
 ```
+What insight or information we got from the visualization:
+
+1.    As we all expected that the discount will lower the store's profit
 
 ### Visualization #15
+The questions we hope to be answered / What we expect to get from the visualization:
+
+-   How is the relationship between discount and profit if we take a look at each category
+-   What sub category that gives the most profit to the store without offering any discount?
 
 ```{r}
 df %>%
@@ -405,8 +548,16 @@ df %>%
     theme_light()+
     theme(plot.title=element_text(size=20, face='bold', hjust=0.5))
 ```
+What insight or information we got from the visualization:
+
+1.    Binders give the most profit to the store with 0% discount
+2.    However, it turns around entirely when they offer 80% discount for binders. The store lost above 20000 USD
 
 ### Visualization #16
+The questions we hope to be answered / What we expect to get from the visualization:
+
+-   How is the relationship between discount and sales?
+-   Is it going to drive more sales of the items as the discount increse?
 
 ```{r}
 df %>%
@@ -416,8 +567,14 @@ df %>%
     theme_light()+
     theme(plot.title=element_text(size=20, face='bold', hjust=0.5))
 ```
+What insight or information we got from the visualization:
+
+1.    Discount is not directly proportional to the sales. As you can see there are still many sales even though there are no discount applied
 
 ### Visualization #17
+The questions we hope to be answered / What we expect to get from the visualization:
+
+-   How many items give a discount above 25%?
 
 ```{r}
 df_disc <- df[df$Discount >= 0.25, ]
@@ -430,8 +587,15 @@ df_disc %>%
     theme_light()+
     theme(plot.title=element_text(size=20, face='bold', hjust=0.5))
 ```
+What insight or information we got from the visualization:
+
+1.    Office Supplies category offers lots of big discount for its product. Over 350 items get 70% discount and approximately about 300 items get 80% discount
 
 ### Visualization #18
+The questions we hope to be answered / What we expect to get from the visualization:
+
+-   What is the relationship between quantity and profit?
+-   Does it give more profit as the quantity increase?
 
 ```{r}
 df %>%
@@ -442,3 +606,6 @@ df %>%
     theme_light()+
     theme(plot.title=element_text(size=20, face='bold', hjust=0.5))
 ```
+What insight or information we got from the visualization:
+
+1.    The more the quantity doesn't make the store's profit increase. The plot above shows there is no the relationship between quantity and profit
